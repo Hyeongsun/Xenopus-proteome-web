@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="style.css">
+  <title>Xenopus proteome</title>
+  <header>
+	<h1>Xenopus proteome</h1>
+	<p class="subheading">Protein expression level during embryogenesis in Xenopus</p>
+
+<script>
+
+var html_url = "https://github.com/Hyeongsun/Xenopus-proteome-web/blob/master/Desktop/Web/image/"
+var api_url = "https://api.github.com/repos/Hyeongsun/Xenopus-proteome-web/contents/Desktop/Web/image/"
+var xmlHttp = new XMLHttpRequest();
+xmlHttp.open("GET", api_url, false);
+xmlHttp.send();
+var response = xmlHttp.responseText;
+var image_list = JSON.parse(response); // get image_list from image_repository
+
+console.log(image_list.length + " images are loaded")
+var image_name_list = [];
+image_list.forEach(function(dict) {
+	image_name_list.push(dict["name"]);
+});
+
+function get_image(gene_name) {
+	if (gene_name === "") return "";
+	var img_html = "";
+	image_name_list.forEach(function(image_name){
+		var search_result = image_name.search(gene_name);
+		if (search_result >= 0) {
+
+			img_html += "<img src='" + html_url + image_name + "?raw=true' alt='" + gene_name + "'>";
+		}
+	});
+	if (img_html === "") return gene_name + " is not exist";
+	else return img_html;
+}
+</script>
+
+</head>
+<body>
+  <div>
+    <form class="search-container">
+    <input type="search" id="search-bar" placeholder="Gene name">
+
+<a href="#"><img class="search-icon" onclick="document.getElementById('img_view').innerHTML=get_image(document.getElementById('search-bar').value);" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png"></a>
+
+    </form>
+  </div>
+
+<div id="img_view"></div>
+
+</body>
+</html>
